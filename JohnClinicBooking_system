@@ -1,0 +1,58 @@
+CREATE DATABASE JohnClinicBooking_System;
+
+USE JohnClinicBooking_System;
+
+-- Table for Patients
+CREATE TABLE Patients (
+    patient_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(70) NOT NULL,
+    last_name VARCHAR(70) NOT NULL,
+    date_of_birth DATE,
+    phone VARCHAR(70),
+    email VARCHAR(70) UNIQUE
+);
+
+-- Table for Doctors
+CREATE TABLE Doctors (
+    doctor_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(60) NOT NULL,
+    last_name VARCHAR(60) NOT NULL,
+    specialty VARCHAR(200)
+);
+
+-- Table for Appointments (One-to-Many relationships)
+-- One Patient can have Many Appointments (1:N)
+-- One Doctor can have Many Appointments (1:N)
+CREATE TABLE Appointments (
+    appointment_id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT NOT NULL,
+    doctor_id INT NOT NULL,
+    appointment_date DATETIME NOT NULL,
+    reason TEXT,
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id)
+);
+
+-- Table for Treatments (Many-to-Many between Doctors and Treatments)
+-- Many Doctors can offer Many Treatments (M:N)
+CREATE TABLE Treatments (
+    treatment_id INT AUTO_INCREMENT PRIMARY KEY,
+    treatment_name VARCHAR(200) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE Doctor_Treatments (
+    doctor_id INT NOT NULL,
+    treatment_id INT NOT NULL,
+    PRIMARY KEY (doctor_id, treatment_id),
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id),
+    FOREIGN KEY (treatment_id) REFERENCES Treatments(treatment_id)
+);
+
+-- Example One-to-One relationship
+-- Assume each Doctor has one Office (1:1)
+CREATE TABLE Doctor_Offices (
+    doctor_id INT NOT NULL PRIMARY KEY,
+    office_location VARCHAR(250) NOT NULL,
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id)
+);
